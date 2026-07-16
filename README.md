@@ -87,6 +87,17 @@ Ce projet suit le [versionnage sémantique](https://semver.org/) (`vMAJOR.MINOR.
 
 *(à compléter à l'Étape 2)*
 
+## Gestion des environnements et secrets
+
+Ce projet utilise 3 environnements GitHub distincts (`development`, `test`, `production`)
+pour isoler la configuration selon le contexte d'exécution.
+
+Les secrets sensibles (identifiants de base de données, clés API) ne sont jamais
+commités dans le dépôt :
+- En local : fichier `.env` (non versionné, voir `.env.example` pour le template)
+- En CI/CD : GitHub Secrets, injectés comme variables d'environnement au moment
+  de l'exécution du pipeline
+
 ## Auteur
 
 Cheun Pelleter - Formation Data Scientist, OpenClassrooms
