@@ -1,0 +1,72 @@
+{
+  "model_type": "LogisticRegression",
+  "threshold": 0.4,
+  "numeric_columns": [
+    "nb_formations_suivies",
+    "niveau_education",
+    "age",
+    "annee_experience_totale",
+    "annees_dans_l_entreprise",
+    "satisfaction_employee_environnement",
+    "satisfaction_employee_nature_travail",
+    "satisfaction_employee_equipe",
+    "satisfaction_employee_equilibre_pro_perso",
+    "note_evaluation_actuelle",
+    "heure_supplementaires",
+    "augementation_salaire_precedente",
+    "burnout_score",
+    "contrainte_mobilite",
+    "ratio_stagnation_promotion",
+    "augmentation_vs_perf",
+    "revenu_par_annee_experience",
+    "score_satisfaction_global",
+    "delta_evaluation",
+    "ratio_experience_entreprises",
+    "instabilite_carriere",
+    "engagement_formation",
+    "epargne_d_entreprise"
+  ],
+  "ordinal_columns": [
+    "frequence_deplacement"
+  ],
+  "nominal_columns": [
+    "domaine_etude",
+    "genre",
+    "statut_marital",
+    "poste"
+  ],
+  "all_input_columns": [
+    "nb_formations_suivies",
+    "niveau_education",
+    "age",
+    "annee_experience_totale",
+    "annees_dans_l_entreprise",
+    "satisfaction_employee_environnement",
+    "satisfaction_employee_nature_travail",
+    "satisfaction_employee_equipe",
+    "satisfaction_employee_equilibre_pro_perso",
+    "note_evaluation_actuelle",
+    "heure_supplementaires",
+    "augementation_salaire_precedente",
+    "burnout_score",
+    "contrainte_mobilite",
+    "ratio_stagnation_promotion",
+    "augmentation_vs_perf",
+    "revenu_par_annee_experience",
+    "score_satisfaction_global",
+    "delta_evaluation",
+    "ratio_experience_entreprises",
+    "instabilite_carriere",
+    "engagement_formation",
+    "epargne_d_entreprise",
+    "frequence_deplacement",
+    "domaine_etude",
+    "genre",
+    "statut_marital",
+    "poste"
+  ],
+  "target_labels": {
+    "0": "En poste",
+    "1": "Démission"
+  }
+}
