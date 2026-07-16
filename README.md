@@ -57,6 +57,20 @@ cp .env.example .env
 # Renseigner les valeurs dans .env
 \```
 
+### Convention de commits
+
+Ce projet suit la convention [Conventional Commits](https://www.conventionalcommits.org/) :
+
+- `feat:` nouvelle fonctionnalité
+- `fix:` correction de bug
+- `chore:` configuration, maintenance
+- `docs:` documentation
+- `test:` ajout ou modification de tests
+- `refactor:` réorganisation de code sans changement de comportement
+
+### Versionnage
+
+Ce projet suit le [versionnage sémantique](https://semver.org/) (`vMAJOR.MINOR.PATCH`).
 ## Utilisation
 
 *(à compléter à l'Étape 3 - lancement de l'API)*
