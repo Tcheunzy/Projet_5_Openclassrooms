@@ -81,6 +81,23 @@ class EmployePredictionInput(BaseModel):
         }
 
 
+class PredictionRequest(BaseModel):
+    """Enveloppe de la requête de prédiction : identifie l'employé (matricule,
+    utilisé pour le lien vers la table EMPLOYES en base) en plus de ses
+    données RH (utilisées, elles, pour la prédiction elle-même)."""
+
+    matricule: str = Field(description="Identifiant métier de l'employé chez Futurisys")
+    employe: EmployePredictionInput
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "matricule": "4521",
+                "employe": EmployePredictionInput.Config.json_schema_extra["example"],
+            }
+        }
+
+
 class PredictionOutput(BaseModel):
     """Résultat renvoyé par l'API après prédiction."""
 

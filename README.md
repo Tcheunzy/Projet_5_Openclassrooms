@@ -31,6 +31,14 @@ binaire, prédiction du départ d'un salarié à partir de données RH).
 └── .github/        # Pipelines CI/CD (GitHub Actions)
 \```
 
+### Modèle de branching
+
+Ce projet suit une approche **GitHub Flow** (trunk-based simplifié) plutôt que
+Git Flow : une seule branche longue durée (`main`, toujours stable et déployable),
+et des branches courtes (`feature/`, `fix/`, `docs/`) fusionnées via Pull Request
+après validation de la CI. Ce choix est adapté à un projet mono-développeur avec
+déploiement continu, sans besoin de gérer plusieurs versions en parallèle.
+
 ## Installation
 
 ### Prérequis
