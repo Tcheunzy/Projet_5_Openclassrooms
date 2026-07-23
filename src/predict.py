@@ -36,7 +36,19 @@ def predict(input_data: dict) -> dict:
 
     Returns:
         dict avec la probabilité, la prédiction binaire et le label associé.
+
+    Raises:
+        ValueError: si une ou plusieurs features attendues sont absentes de input_data.
     """
+    colonnes_attendues = set(_metadata["all_input_columns"])
+    colonnes_recues = set(input_data.keys())
+    colonnes_manquantes = colonnes_attendues - colonnes_recues
+
+    if colonnes_manquantes:
+        raise ValueError(
+            f"Colonnes manquantes dans les données d'entrée : {sorted(colonnes_manquantes)}"
+        )
+
     df = pd.DataFrame([input_data], columns=_metadata["all_input_columns"])
 
     proba = _model.predict_proba(df)[0, 1]

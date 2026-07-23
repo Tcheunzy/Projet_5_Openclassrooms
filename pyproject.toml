@@ -20,6 +20,7 @@ dependencies = [
 [dependency-groups]
 dev = [
     "catboost>=1.2.10",
+    "httpx>=0.28.1",
     "imbalanced-learn>=0.14.2",
     "ipykernel>=7.3.0",
     "lightgbm>=4.6.0",
@@ -28,6 +29,7 @@ dev = [
     "pillow>=12.3.0",
     "pip>=26.1.2",
     "pytest>=9.1.1",
+    "pytest-cov>=7.1.0",
     "scipy>=1.17.1",
     "seaborn>=0.13.2",
     "shap>=0.46",

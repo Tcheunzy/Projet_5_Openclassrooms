@@ -1,7 +1,7 @@
 """Schémas Pydantic pour la validation des données de l'API."""
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class EmployePredictionInput(BaseModel):
@@ -46,8 +46,8 @@ class EmployePredictionInput(BaseModel):
     engagement_formation: float
     epargne_d_entreprise: float = Field(ge=0)
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "nb_formations_suivies": 2,
                 "niveau_education": 3,
@@ -79,6 +79,7 @@ class EmployePredictionInput(BaseModel):
                 "poste": "Cadre Commercial",
             }
         }
+    )
 
 
 class PredictionRequest(BaseModel):
@@ -89,13 +90,14 @@ class PredictionRequest(BaseModel):
     matricule: str = Field(description="Identifiant métier de l'employé chez Futurisys")
     employe: EmployePredictionInput
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "matricule": "4521",
-                "employe": EmployePredictionInput.Config.json_schema_extra["example"],
+                "employe": EmployePredictionInput.model_config["json_schema_extra"]["example"],
             }
         }
+    )
 
 
 class PredictionOutput(BaseModel):
