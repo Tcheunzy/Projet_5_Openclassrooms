@@ -19,6 +19,7 @@ data/processed/*
 models/*.pkl
 models/*.joblib
 !models/.gitkeep
+!models/model_pipeline.joblib
 
 # Secrets / variables d'environnement
 .env
