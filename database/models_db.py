@@ -1,5 +1,5 @@
 """Modèles SQLAlchemy — traduction du schéma UML en tables PostgreSQL."""
-from datetime import datetime
+from datetime import datetime, timezone
 
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, TIMESTAMP
 from sqlalchemy.dialects.postgresql import JSONB
@@ -46,7 +46,7 @@ class Employe(Base):
     engagement_formation = Column(Float, nullable=False)
     epargne_d_entreprise = Column(Float, nullable=False)
 
-    date_maj = Column(TIMESTAMP, default=datetime.utcnow, onupdate=datetime.utcnow)
+    date_maj = Column(TIMESTAMP, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
     predictions = relationship("Prediction", back_populates="employe")
 
@@ -59,7 +59,7 @@ class Prediction(Base):
     id = Column(Integer, primary_key=True, index=True)
     employe_id = Column(Integer, ForeignKey("employes.id"), nullable=False)
 
-    date_prediction = Column(TIMESTAMP, default=datetime.utcnow, nullable=False)
+    date_prediction = Column(TIMESTAMP, default=lambda: datetime.now(timezone.utc), nullable=False)
     donnees_entree = Column(JSONB, nullable=False)
 
     probabilite_depart = Column(Float, nullable=False)

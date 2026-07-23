@@ -35,3 +35,6 @@ dev = [
     "shap>=0.46",
     "xgboost>=3.2.0",
 ]
+
+[tool.coverage.run]
+omit = ["database/create_db.py"]
