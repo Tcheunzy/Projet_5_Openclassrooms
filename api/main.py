@@ -1,7 +1,10 @@
 """Point d'entrée de l'API FastAPI - Prédiction du risque de départ des employés."""
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException
+from sqlalchemy.orm import Session
 
 from api.schemas import PredictionRequest, PredictionOutput
+from database.connection import get_db
+from database.models_db import Employe, Prediction
 from src.predict import predict
 
 app = FastAPI(
@@ -9,7 +12,7 @@ app = FastAPI(
     description="Expose le modèle de Machine Learning (LogisticRegression) "
                  "développé lors du Projet 4, prédisant le risque de départ "
                  "volontaire d'un employé.",
-    version="0.1.0",
+    version="0.2.0",
 )
 
 
@@ -21,36 +24,62 @@ def root():
 
 @app.get("/health", tags=["Monitoring"])
 def health_check():
-    """Healthcheck explicite, utilisé par les plateformes de déploiement
-    (ex: Render) pour vérifier que le service répond correctement."""
+    """Healthcheck explicite, utilisé par les plateformes de déploiement."""
     return {"status": "healthy"}
 
 
 @app.post("/predict", response_model=PredictionOutput, tags=["Prédiction"])
-def predict_turnover(request: PredictionRequest):
-    """Prédit le risque de départ d'un employé à partir de ses données RH.
+def predict_turnover(request: PredictionRequest, db: Session = Depends(get_db)):
+    """Prédit le risque de départ d'un employé, et enregistre l'échange en base.
 
-    `request.matricule` identifie l'employé pour la BDD (table EMPLOYES) et
-    n'est jamais envoyé au modèle. `request.employe` contient les 28
-    features RH utilisées pour la prédiction elle-même.
-
-    Retourne la probabilité de départ, la prédiction binaire (0/1),
-    le label associé, et le seuil de décision utilisé.
+    request.matricule identifie l'employé pour la BDD (table EMPLOYES) et
+    n'est jamais envoyé au modèle. request.employe contient les 28 features
+    RH utilisées pour la prédiction elle-même.
     """
     try:
+        # 1. Prédiction (logique métier, indépendante de la BDD)
         result = predict(request.employe.model_dump())
 
-        # TODO (Étape 4 - SQLAlchemy) : logique "chercher ou créer"
-        # 1. Chercher un employé existant en base via request.matricule
-        # 2. S'il existe : mettre à jour ses données avec request.employe
-        #    S'il n'existe pas : le créer, PostgreSQL génère son id
-        # 3. Insérer une nouvelle ligne dans PREDICTIONS avec :
-        #    - employe_id = l'id récupéré/créé à l'étape 2
-        #    - donnees_entree = request.employe.model_dump() (instantané JSON)
-        #    - probabilite_depart, prediction, label, seuil_utilise = result
+        # 2. Chercher l'employé existant via son matricule
+        employe_db = (
+            db.query(Employe)
+            .filter(Employe.matricule == request.matricule)
+            .first()
+        )
+
+        if employe_db is None:
+            # 3a. Création d'un nouvel employé
+            employe_db = Employe(
+                matricule=request.matricule,
+                **request.employe.model_dump(),
+            )
+            db.add(employe_db)
+        else:
+            # 3b. Mise à jour d'un employé existant
+            for champ, valeur in request.employe.model_dump().items():
+                setattr(employe_db, champ, valeur)
+
+        # 4. Flush pour obtenir employe_db.id, sans encore commit définitivement
+        db.flush()
+
+        # 5. Création de la ligne PREDICTIONS, liée à cet employé
+        prediction_db = Prediction(
+            employe_id=employe_db.id,
+            donnees_entree=request.employe.model_dump(),
+            probabilite_depart=result["probabilite_depart"],
+            prediction=result["prediction"],
+            label=result["label"],
+            seuil_utilise=result["seuil_utilise"],
+        )
+        db.add(prediction_db)
+
+        # 6. Validation définitive des deux opérations ensemble (transaction atomique)
+        db.commit()
 
         return result
+
     except Exception as e:
+        db.rollback()
         raise HTTPException(
             status_code=500,
             detail=f"Erreur lors de la prédiction : {str(e)}"
