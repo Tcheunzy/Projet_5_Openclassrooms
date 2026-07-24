@@ -21,4 +21,4 @@ COPY models/ ./models/
 ENV PORT=8000
 EXPOSE 8000
 
-CMD ["sh", "-c", "uv run uvicorn api.main:app --host 0.0.0.0 --port $PORT"]
+CMD ["sh", "-c", "uv run --no-sync uvicorn api.main:app --host 0.0.0.0 --port $PORT"]
